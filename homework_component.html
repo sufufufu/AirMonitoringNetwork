@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>作業練習：元件變換</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="images/favicon.ico" rel="shortcut icon">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="stylesheets/all.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js"
+    integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/regular.js"
+    integrity="sha384-t7yHmUlwFrLxHXNLstawVRBMeSLcXTbQ5hsd0ifzwGtN7ZF7RZ8ppM7Ldinuoiif"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js"
+    integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c"
+    crossorigin="anonymous"></script>
+  <script src="javascripts/vendor.js"></script>
+  <style>
+    .status-aqi1 {
+      background-color: #fff;
+    }
+
+    .status-aqi2 {
+      background-color: #ffff00;
+    }
+
+    .status-aqi3 {
+      background-color: #ff7e00;
+    }
+
+    .status-aqi4 {
+      background-color: #ff0000;
+    }
+
+    .status-aqi5 {
+      background-color: #8f3f97;
+    }
+
+    .status-aqi6 {
+      background-color: #7e0023;
+    }
+
+    .btocolor {
+      background-color: #e8e7d2;
+    }
+
+    .bcolor {
+      background-color: #d2d5b8;
+    }
+
+    .Description {
+      list-style: none;
+    }
+  </style>
+</head>
+
+<body class="btocolor">
+
+  <div class="container my-5">
+    <div class="row">
+
+      <div class="col-md-12 post">
+        <!-- 練習開始 -->
+        <h1 class="mt-0 text-muted">空氣品質監測網</h1>
+        <p class="">說明: 空氣品質指標 (AQI)</p>
+        <ul class="row Description pl-0 px-3">
+          <li class="col-md-2 col-sm-12 status-aqi1 py-">
+            <p class="my-0">良好</p>
+            <p class="my-0">0~50</p>
+          </li>
+          <li class="col-md-2 col-sm-12 status-aqi2 py-">
+            <p class="my-0">普通</p>
+            <p class="my-0">51~100</p>
+          </li>
+          <li class="col-md-2 col-sm-12 status-aqi3 py-">
+            <p class="my-0">對敏感族群不健康</p>
+            <p class="my-0">101~150</p>
+          </li>
+          <li class="col-md-2 col-sm-12 status-aqi4 py-">
+            <p class="my-0">對所有族群不健康</p>
+            <p class="my-0">151~200</p>
+          </li>
+          <li class="col-md-2 col-sm-12 status-aqi5 py-">
+            <p class="my-0">非常不健康</p>
+            <p class="my-0">201~300</p>
+          </li>
+          <li class="col-md-2 col-sm-12 status-aqi6 py-">
+            <p class="my-0">危害</p>
+            <p class="my-0">301~500</p>
+          </li>
+        </ul>
+        <div id="app">
+          <h3>監測站縣市塞選:</h3>
+          <select name="" id="" class="form-control mb-3" v-model="filter">
+            <option disabled value="">--- 請選擇城市 ---</option>
+            <option value="all">全部</option>
+            <option v-for="item in city" :value="item">{{item}}</option>
+          </select>
+          <div>
+            <h4 v-if="newStared.length > 0">關注城市</h4>
+            <div class="card-columns">
+              <div is="cardcity" v-for="(item,key) in newStared" :card-item="item" :key="item.SiteId"
+                @itemname="removeStar(item.SiteId)" :data-cardid="item.SiteId">
+                <i class="fas fa-star" slot="i"></i>
+              </div>
+              <!-- <div class="card status-aqi2">
+                <div class="card-header">苗栗縣 - 三義
+                  <a href="#" class="float-right"><i class="fas fa-star"></i></a>
+                </div>
+                <div class="card-body">
+                  <ul class="list-unstyled">
+                    <li>AQI 指數: 54</li>
+                    <li>PM2.5: 8</li>
+                    <li>說明: 普通</li>
+                  </ul>
+                  2018-05-20 16:00
+                </div>
+              </div> -->
+              <!-- <div class="card status-aqi">
+                <div class="card-header">苗栗縣 - 三義
+                  <a href="#" class="float-right"><i class="far fa-star"></i></a>
+                </div>
+                <div class="card-body">
+                  <ul class="list-unstyled">
+                    <li>AQI 指數: 54</li>
+                    <li>PM2.5: 8</li>
+                    <li>說明: 普通</li>
+                  </ul>
+                  2018-05-20 16:00
+                </div>
+              </div> -->
+            </div>
+
+          </div>
+
+          <hr>
+
+          <div class="card-columns">
+            <div is="cardcity" v-for="(item,key) in computedData" :card-item="item" :key="item.SiteId"
+              @itemname="addStar(item.SiteId)" :data-cardid="item.SiteId"
+              v-if="item.County === filter || filter === '' || filter === 'all'">
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="bcolor py-5 text-center">
+    <h6 class="">2020 六角學院 vue.js課程練習 蘇喜福</h6>
+  </footer>
+
+  <!-- 
+狀態對應表
+'良好',
+'status-aqi2' '普通',
+'status-aqi3' '對敏感族群不健康',
+'status-aqi4' '對所有族群不健康',
+'status-aqi5' '非常不健康',
+'status-aqi6' '危害'
+-->
+
+  <script>
+    // API 來源
+    // https://opendata.epa.gov.tw/Data/Contents/AQI/
+
+    Vue.component('cardcity', {
+      props: ['cardItem'],
+      template: `
+      <div class="card" :class="statusClass"> 
+        <div class="card-header">{{cardItem.County}} - {{cardItem.SiteName}}
+          <a href="#" class="float-right" @click.prevent="cardFun" ><slot name="i"><i class="far fa-star"></i></slot></a>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled">
+            <li>空氣品質AQI指數: {{cardItem.AQI}}</li>
+            
+            <li>空氣品質: {{cardItem.Status}}</li>
+            <li>二氧化硫(ppb): {{cardItem.SO2}}</li>
+            <li>一氧化碳(ppm): {{cardItem.CO}}</li>
+            <li>懸浮微粒(μg/m3): {{cardItem.PM10}}</li>
+            <li>PM2.5: {{cardItem['PM2.5']}}</li>
+            <li>空氣品質: {{cardItem.Status}}</li>
+            <li>風速(m/sec): {{cardItem.WindSpeed}}</li>
+          </ul>
+          資料更新日期:{{cardItem.PublishTime}}
+        </div>
+      </div>
+      `,
+      data: function () {
+        return {
+          statusClass: {
+            "status-aqi2": false,
+            "status-aqi3": false,
+            "status-aqi4": false,
+            "status-aqi5": false,
+            "status-aqi6": false
+          }
+        };
+      },
+      created() {
+        // 城市空汙顏色
+        this.cardClass();
+      },
+      methods: {
+        cardFun: function () {
+          this.$emit("itemname");
+        },
+        cardClass: function () {
+          switch (this.cardItem.Status) {
+            case "普通":
+              this.statusClass["status-aqi2"] = true;
+              break;
+            case "對敏感族群不健康":
+              this.statusClass["status-aqi3"] = true;
+              break;
+            case "對所有族群不健康":
+              this.statusClass["status-aqi4"] = true;
+              break;
+            case "非常不健康":
+              this.statusClass["status-aqi5"] = true;
+              break;
+            case "危害":
+              this.statusClass["status-aqi6"] = true;
+              break;
+          };
+        },
+      },
+
+    });
+
+
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        hi: "hi",
+        data: [],
+        location: [],
+        stared: [],
+        filter: '',
+        city: [],
+      },
+      created() {
+        this.getData();
+      },
+      // 請在此撰寫 JavaScript
+      methods: {
+        getData() {
+          const vm = this;
+          const api = 'http://opendata2.epa.gov.tw/AQI.json';
+
+          // 使用 jQuery ajax
+          $.get(api).then(function (response) {
+            vm.data = response;
+            //console.log("hi");
+            //console.log(response);
+            vm.getCity();
+          });
+          vm.stared = JSON.parse(localStorage.getItem("starStr")) || [];
+        },
+        getCity: function () {
+          const vm = this;
+          //const getCounty = vm.data.map(item => item.County);
+          const getCounty = vm.data.map(Gcity);
+          function Gcity(item) {
+            return item.County;
+          }
+          //console.log("hi");
+          console.log(getCounty);
+
+          //方法二
+          vm.city = getCounty.filter(function (element, index, getCounty) {
+            //                  console.log(element + "index:" + index);
+            //                  console.log(getCounty.indexOf(element) + "index:" + index);
+            //                    console.log(getCounty.indexOf(element)===index);
+            return getCounty.indexOf(element) === index;
+          });
+          //filter 接收的回撥函式，其實可以有多個引數。通常我們僅使用第一個引數，表示Array的某個元素。回撥函式還可以接收另外兩個引數，表示元素的位置和陣列本身,去除重複元素依靠的是 indexOf 總是返回第一個元素的位置，後續的重複元素位置與 indexOf 返回的位置不相等，因此被 filter 濾掉了。return為ture時則會回傳到city中
+        },
+        updateStared: function () {
+          localStorage.setItem("starStr", JSON.stringify(this.stared));
+          this.stared = JSON.parse(localStorage.getItem("starStr"));
+        },
+        addStar: function (para) {
+          this.stared.push(para);
+          this.updateStared();
+        },
+        removeStar: function (para) {
+          this.stared.splice(this.stared.indexOf(para), 1);
+          this.updateStared();
+        }
+      },
+      computed: {
+        computedData: function () {
+          const vm = this;
+          return vm.data.filter(function (el) {
+            return vm.stared.indexOf(el.SiteId) == -1;
+          });
+        },
+        newStared: function () {
+          const vm = this;
+          return vm.data.filter(function (el) {
+            return vm.stared.indexOf(el.SiteId) >= 0;
+          });
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
