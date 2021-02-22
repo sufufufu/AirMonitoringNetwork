@@ -3368,12 +3368,14 @@ tbody.collapse.show {
 @media (min-width: 576px) {
   .card-columns {
     column-count: 3;
-    column-gap: 1.25rem; }
-    .card-columns .card {
+    column-gap: 1.25rem; 
+  }
+  .card-columns .card {
       display: inline-block;
       width: 100%; 
       min-height: 380px;
-    } }
+  }
+}
 
 .breadcrumb {
   display: -ms-flexbox;

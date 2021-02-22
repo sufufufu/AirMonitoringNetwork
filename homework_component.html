@@ -7,16 +7,6 @@
   <link href="images/favicon.ico" rel="shortcut icon">
   <meta charset="UTF-8">
   <link rel="stylesheet" href="stylesheets/all.css">
-  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js"
-    integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l"
-    crossorigin="anonymous"></script>
-  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/regular.js"
-    integrity="sha384-t7yHmUlwFrLxHXNLstawVRBMeSLcXTbQ5hsd0ifzwGtN7ZF7RZ8ppM7Ldinuoiif"
-    crossorigin="anonymous"></script>
-  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js"
-    integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c"
-    crossorigin="anonymous"></script>
-  <script src="javascripts/vendor.js"></script>
   <style>
     .status-aqi1 {
       background-color: #fff;
@@ -99,6 +89,7 @@
             <option v-for="item in city" :value="item">{{item}}</option>
           </select>
           <div>
+            <hr v-if="newStared.length > 0">
             <h4 v-if="newStared.length > 0">關注城市</h4>
             <div class="card-columns">
               <div is="cardcity" v-for="(item,key) in newStared" :card-item="item" :key="item.SiteId"
@@ -148,7 +139,7 @@
       </div>
     </div>
   </div>
-  <footer class="bcolor py-5 text-center">
+  <footer class="bcolor py-5 text-center col-12">
     <h6 class="">2020 六角學院 vue.js課程練習 蘇喜福</h6>
   </footer>
 
@@ -161,7 +152,16 @@
 'status-aqi5' '非常不健康',
 'status-aqi6' '危害'
 -->
-
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js"
+    integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/regular.js"
+    integrity="sha384-t7yHmUlwFrLxHXNLstawVRBMeSLcXTbQ5hsd0ifzwGtN7ZF7RZ8ppM7Ldinuoiif"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js"
+    integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c"
+    crossorigin="anonymous"></script>
+  <script src="javascripts/vendor.js"></script>
   <script>
     // API 來源
     // https://opendata.epa.gov.tw/Data/Contents/AQI/
@@ -169,7 +169,7 @@
     Vue.component('cardcity', {
       props: ['cardItem'],
       template: `
-      <div class="card" :class="statusClass"> 
+      <div class="card " :class="statusClass"> 
         <div class="card-header">{{cardItem.County}} - {{cardItem.SiteName}}
           <a href="#" class="float-right" @click.prevent="cardFun" ><slot name="i"><i class="far fa-star"></i></slot></a>
         </div>
@@ -250,13 +250,13 @@
       methods: {
         getData() {
           const vm = this;
-          const api = 'http://opendata2.epa.gov.tw/AQI.json';
+          // const api = 'https://opendata2.epa.gov.tw/AQI.json';
+          const api = 'https://data.epa.gov.tw/api/v1/aqx_p_432?api_key=02f74e29-a320-459b-bf4c-916c3613b857';
 
           // 使用 jQuery ajax
           $.get(api).then(function (response) {
-            vm.data = response;
-            //console.log("hi");
-            //console.log(response);
+            vm.data = response.records;
+            // console.log(response.records);
             vm.getCity();
           });
           vm.stared = JSON.parse(localStorage.getItem("starStr")) || [];
@@ -269,7 +269,7 @@
             return item.County;
           }
           //console.log("hi");
-          console.log(getCounty);
+          // console.log(getCounty);
 
           //方法二
           vm.city = getCounty.filter(function (element, index, getCounty) {
